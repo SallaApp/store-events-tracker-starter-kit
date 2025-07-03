@@ -1,7 +1,7 @@
 {
   "name": "store-events-tracker-starter-kit",
   "version": "1.0.0",
-  "description": "A starter kit for tracking ecommerce events based on Segment's ecommerce v2 specification",
+  "description": "A starter kit for tracking Salla ecommerce events based on Segment's ecommerce v2 specification",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {

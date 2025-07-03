@@ -1,6 +1,6 @@
 # Store Events Tracker
 
-A TypeScript-based ecommerce events tracker that integrates with Salla's analytics platform. This package provides a comprehensive set of event listeners for tracking various ecommerce activities based on Segment's ecommerce v2 specification.
+A TypeScript-based ecommerce events tracker that integrates with Salla's analytics platform. This package provides a comprehensive set of event listeners for tracking various Salla ecommerce activities based on Segment's ecommerce v2 specification.
 
 ## Overview
 

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salla Store Events Tracker - Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .status-indicator.ready {
+            animation: pulse 2s infinite;
+            background-color: #22c55e !important;
+        }
+
+        .status-indicator.loading {
+            animation: pulse 2s infinite;
+            background-color: #f97316 !important;
+        }
+
+        .status-indicator.error {
+            background-color: #ef4444 !important;
+        }
+
+        .console-output:empty::before {
+            content: "Console output will appear here...";
+            color: #666;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 leading-relaxed font-sans">
+    <!-- Header -->
+    <div class="bg-blue-500 text-white p-6 text-center">
+        <h1 class="text-3xl font-bold mb-2">🛍️ Salla Store Events Tracker</h1>
+        <p class="text-lg">Preview Environment - Test your ecommerce event listeners</p>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="bg-white p-4 border-b border-gray-200">
+        <div id="status-content" class="flex items-center justify-center">
+            <span class="status-indicator loading inline-block w-3 h-3 rounded-full mr-2 bg-orange-400"></span>
+            <span id="status-text">Loading Salla SDK...</span>
+        </div>
+    </div>
+
+    <!-- Main Layout - Two Columns -->
+    <div class="flex h-screen">
+        <!-- Left Side - Content -->
+        <div class="w-1/2 overflow-y-auto p-6 bg-gray-50">
+            <!-- Event Testing Dashboard -->
+            <div class="bg-white p-6 rounded-lg mb-6 border border-gray-200">
+                <h2 class="text-blue-600 mb-4 text-xl font-semibold">🎯 Event Testing Dashboard</h2>
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Product Events -->
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h3 class="text-gray-700 mb-3 text-lg font-medium">Product Events</h3>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerProductViewed()">Product Viewed</button>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerProductClicked()">Product Clicked</button>
+                        <button class="bg-green-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-green-600" onclick="triggerProductAdded()">Add to Cart</button>
+                        <button class="bg-red-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-red-600" onclick="triggerProductRemoved()">Remove from Cart</button>
+                        <button class="bg-gray-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-gray-600" onclick="triggerProductListViewed()">View Product List</button>
+                    </div>
+
+                    <!-- Cart & Checkout Events -->
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h3 class="text-gray-700 mb-3 text-lg font-medium">Cart & Checkout Events</h3>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerCartViewed()">View Cart</button>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerCheckoutStarted()">Start Checkout</button>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerCheckoutStepViewed()">Checkout Step</button>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerPaymentInfoEntered()">Payment Info</button>
+                        <button class="bg-green-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-green-600" onclick="triggerOrderCompleted()">Complete Order</button>
+                    </div>
+
+                    <!-- Promotion & Coupon Events -->
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h3 class="text-gray-700 mb-3 text-lg font-medium">Promotions & Coupons</h3>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerPromotionViewed()">View Promotion</button>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerPromotionClicked()">Click Promotion</button>
+                        <button class="bg-orange-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-orange-600" onclick="triggerCouponEntered()">Enter Coupon</button>
+                        <button class="bg-green-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-green-600" onclick="triggerCouponApplied()">Apply Coupon</button>
+                        <button class="bg-red-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-red-600" onclick="triggerCouponDenied()">Deny Coupon</button>
+                    </div>
+
+                    <!-- Search & Wishlist Events -->
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h3 class="text-gray-700 mb-3 text-lg font-medium">Search & Wishlist</h3>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerProductsSearched()">Search Products</button>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerProductShared()">Share Product</button>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerProductReviewed()">Review Product</button>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-blue-600" onclick="triggerWishlistAdded()">Add to Wishlist</button>
+                        <button class="bg-red-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-red-600" onclick="triggerWishlistRemoved()">Remove from Wishlist</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Store Interface -->
+            <div class="bg-white p-6 rounded-lg mb-6 border border-gray-200">
+                <h2 class="text-blue-600 mb-4 text-xl font-semibold">🛒 Sample Store Interface</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-lg" onclick="triggerProductViewed('prod-001')">
+                        <div class="w-full h-24 bg-gray-200 rounded mb-3 flex items-center justify-center text-gray-600 text-sm">📱 Product Image</div>
+                        <div>
+                            <h4 class="mb-2 text-gray-800 font-medium">iPhone 15 Pro</h4>
+                            <div class="text-lg font-bold text-blue-600 mb-3">$999.00</div>
+                            <button class="bg-green-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-green-600" onclick="event.stopPropagation(); triggerProductAdded('prod-001')">Add to Cart</button>
+                            <button class="bg-gray-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-gray-600" onclick="event.stopPropagation(); triggerWishlistAdded('prod-001')">♥ Wishlist</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-lg" onclick="triggerProductViewed('prod-002')">
+                        <div class="w-full h-24 bg-gray-200 rounded mb-3 flex items-center justify-center text-gray-600 text-sm">💻 Product Image</div>
+                        <div>
+                            <h4 class="mb-2 text-gray-800 font-medium">MacBook Pro 16"</h4>
+                            <div class="text-lg font-bold text-blue-600 mb-3">$2,499.00</div>
+                            <button class="bg-green-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-green-600" onclick="event.stopPropagation(); triggerProductAdded('prod-002')">Add to Cart</button>
+                            <button class="bg-gray-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-gray-600" onclick="event.stopPropagation(); triggerWishlistAdded('prod-002')">♥ Wishlist</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-lg" onclick="triggerProductViewed('prod-003')">
+                        <div class="w-full h-24 bg-gray-200 rounded mb-3 flex items-center justify-center text-gray-600 text-sm">🎧 Product Image</div>
+                        <div>
+                            <h4 class="mb-2 text-gray-800 font-medium">AirPods Pro</h4>
+                            <div class="text-lg font-bold text-blue-600 mb-3">$249.00</div>
+                            <button class="bg-green-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-green-600" onclick="event.stopPropagation(); triggerProductAdded('prod-003')">Add to Cart</button>
+                            <button class="bg-gray-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm mr-2 mb-2 hover:bg-gray-600" onclick="event.stopPropagation(); triggerWishlistAdded('prod-003')">♥ Wishlist</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg mt-4">
+                    <h4 class="font-medium mb-2">🛒 Shopping Cart</h4>
+                    <div id="cart-items">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-300 last:border-b-0">
+                            <span>Your cart is empty</span>
+                            <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm hover:bg-blue-600" onclick="triggerCartViewed()">View Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center p-4 text-gray-600">
+                <p class="mb-1">🚀 Salla Store Events Tracker - Built with TypeScript & Vite</p>
+                <p class="text-sm">Check the browser console for detailed event logs</p>
+            </div>
+        </div>
+
+        <!-- Right Side - Console -->
+        <div class="w-1/2 bg-gray-800 text-white p-6 overflow-y-auto">
+            <div class="mb-4">
+                <h2 class="text-white mb-4 text-xl font-semibold">📊 Console Output</h2>
+                <button class="bg-gray-600 text-white border-none py-2 px-4 rounded cursor-pointer text-sm hover:bg-gray-700 mb-4" onclick="clearConsole()">Clear Console</button>
+            </div>
+            <div class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm h-full overflow-y-auto" id="console-output"></div>
+        </div>
+    </div>
+
+    <!-- Salla SDK Mock -->
+    <script>
+        // Mock Salla SDK for testing purposes
+        window.Salla = {
+            onReady: function(callback) {
+                console.log('🔄 Salla SDK initializing...');
+                updateStatus('ready', 'Salla SDK Ready - Event Tracker Active');
+
+                // Simulate SDK ready state
+                setTimeout(() => {
+                    callback();
+                    logToConsole('✅ Salla SDK initialized successfully');
+                    logToConsole('🎯 Store Events Tracker registered');
+                }, 1000);
+            },
+
+            analytics: {
+                registerTracker: function(config) {
+                    console.log('📊 Registering tracker:', config.name);
+                    logToConsole(`📊 Tracker registered: ${config.name}`);
+
+                    // Store the tracker for later use
+                    window.sallaTracker = config;
+                }
+            }
+        };
+
+        // Sample data for testing
+        const sampleProducts = {
+            'prod-001': {
+                product_id: 'prod-001',
+                name: 'iPhone 15 Pro',
+                category: 'Electronics',
+                brand: 'Apple',
+                price: 999.00,
+                currency: 'USD',
+                sku: 'IPHONE15PRO-256GB',
+                image_url: 'https://example.com/iphone15pro.jpg',
+                url: 'https://example.com/products/iphone-15-pro'
+            },
+            'prod-002': {
+                product_id: 'prod-002',
+                name: 'MacBook Pro 16"',
+                category: 'Electronics',
+                brand: 'Apple',
+                price: 2499.00,
+                currency: 'USD',
+                sku: 'MACBOOK-PRO-16-M3',
+                image_url: 'https://example.com/macbook-pro.jpg',
+                url: 'https://example.com/products/macbook-pro-16'
+            },
+            'prod-003': {
+                product_id: 'prod-003',
+                name: 'AirPods Pro',
+                category: 'Electronics',
+                brand: 'Apple',
+                price: 249.00,
+                currency: 'USD',
+                sku: 'AIRPODS-PRO-2ND-GEN',
+                image_url: 'https://example.com/airpods-pro.jpg',
+                url: 'https://example.com/products/airpods-pro'
+            }
+        };
+
+        let cartItems = [];
+
+        // Utility functions
+        function updateStatus(status, message) {
+            const indicator = document.querySelector('.status-indicator');
+            const statusText = document.getElementById('status-text');
+
+            indicator.className = `status-indicator ${status}`;
+            statusText.textContent = message;
+        }
+
+        function logToConsole(message) {
+            const consoleOutput = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleOutput.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        function clearConsole() {
+            document.getElementById('console-output').innerHTML = '';
+        }
+
+        function trackEvent(eventName, payload) {
+            if (window.sallaTracker) {
+                logToConsole(`🎯 Tracking event: ${eventName}`);
+                logToConsole(`📦 Payload: ${JSON.stringify(payload, null, 2)}`);
+                window.sallaTracker.track(eventName, payload);
+            } else {
+                logToConsole('❌ Tracker not ready yet');
+            }
+        }
+
+        // Event trigger functions
+        function triggerProductViewed(productId = 'prod-001') {
+            const product = sampleProducts[productId];
+            trackEvent('Product Viewed', product);
+        }
+
+        function triggerProductClicked(productId = 'prod-001') {
+            const product = sampleProducts[productId];
+            trackEvent('Product Clicked', {
+                ...product,
+                list_id: 'homepage-featured'
+            });
+        }
+
+        function triggerProductAdded(productId = 'prod-001') {
+            const product = sampleProducts[productId];
+            cartItems.push(product);
+            updateCartDisplay();
+
+            trackEvent('Product Added', {
+                ...product,
+                cart_id: 'cart-001',
+                quantity: 1
+            });
+        }
+
+        function triggerProductRemoved(productId = 'prod-001') {
+            const product = sampleProducts[productId];
+            cartItems = cartItems.filter(item => item.product_id !== productId);
+            updateCartDisplay();
+
+            trackEvent('Product Removed', {
+                ...product,
+                cart_id: 'cart-001',
+                quantity: 1
+            });
+        }
+
+        function triggerProductListViewed() {
+            trackEvent('Product List Viewed', {
+                list_id: 'category-electronics',
+                category: 'Electronics',
+                products: Object.values(sampleProducts)
+            });
+        }
+
+        function triggerCartViewed() {
+            trackEvent('Cart Viewed', {
+                cart_id: 'cart-001',
+                products: cartItems.length > 0 ? cartItems : [sampleProducts['prod-001']]
+            });
+        }
+
+        function triggerCheckoutStarted() {
+            const products = cartItems.length > 0 ? cartItems : [sampleProducts['prod-001']];
+            const total = products.reduce((sum, product) => sum + product.price, 0);
+
+            trackEvent('Checkout Started', {
+                order_id: 'order-001',
+                value: total,
+                revenue: total,
+                currency: 'USD',
+                products: products
+            });
+        }
+
+        function triggerCheckoutStepViewed() {
+            trackEvent('Checkout Step Viewed', {
+                checkout_id: 'checkout-001',
+                step: 1,
+                shipping_method: 'standard',
+                payment_method: 'credit_card'
+            });
+        }
+
+        function triggerPaymentInfoEntered() {
+            trackEvent('Payment Info Entered', {
+                checkout_id: 'checkout-001',
+                order_id: 'order-001',
+                step: 2,
+                payment_method: 'credit_card'
+            });
+        }
+
+        function triggerOrderCompleted() {
+            const products = cartItems.length > 0 ? cartItems : [sampleProducts['prod-001']];
+            const total = products.reduce((sum, product) => sum + product.price, 0);
+
+            trackEvent('Order Completed', {
+                checkout_id: 'checkout-001',
+                order_id: 'order-001',
+                total: total,
+                revenue: total,
+                currency: 'USD',
+                products: products
+            });
+        }
+
+        function triggerPromotionViewed() {
+            trackEvent('Promotion Viewed', {
+                promotion_id: 'promo-001',
+                creative: 'summer-sale-banner',
+                name: 'Summer Sale 2024',
+                position: 'homepage-hero'
+            });
+        }
+
+        function triggerPromotionClicked() {
+            trackEvent('Promotion Clicked', {
+                promotion_id: 'promo-001',
+                creative: 'summer-sale-banner',
+                name: 'Summer Sale 2024',
+                position: 'homepage-hero'
+            });
+        }
+
+        function triggerCouponEntered() {
+            trackEvent('Coupon Entered', {
+                cart_id: 'cart-001',
+                coupon_id: 'SAVE20',
+                coupon_name: '20% Off Summer Sale',
+                discount: 20
+            });
+        }
+
+        function triggerCouponApplied() {
+            trackEvent('Coupon Applied', {
+                cart_id: 'cart-001',
+                coupon_id: 'SAVE20',
+                coupon_name: '20% Off Summer Sale',
+                discount: 20
+            });
+        }
+
+        function triggerCouponDenied() {
+            trackEvent('Coupon Denied', {
+                cart_id: 'cart-001',
+                coupon_id: 'EXPIRED10',
+                coupon_name: 'Expired Coupon',
+                reason: 'Coupon has expired'
+            });
+        }
+
+        function triggerProductsSearched() {
+            trackEvent('Products Searched', {
+                query: 'apple iphone',
+                filters: {
+                    category: 'Electronics',
+                    brand: 'Apple',
+                    price_range: '500-1500'
+                },
+                products: [sampleProducts['prod-001']]
+            });
+        }
+
+        function triggerProductShared() {
+            trackEvent('Product Shared', {
+                share_via: 'whatsapp',
+                share_message: 'Check out this amazing iPhone!',
+                recipient: 'friend@example.com',
+                ...sampleProducts['prod-001']
+            });
+        }
+
+        function triggerProductReviewed() {
+            trackEvent('Product Reviewed', {
+                review_id: 'review-001',
+                review_body: 'Amazing product! Highly recommended.',
+                rating: 5,
+                ...sampleProducts['prod-001']
+            });
+        }
+
+        function triggerWishlistAdded(productId = 'prod-001') {
+            const product = sampleProducts[productId];
+            trackEvent('Wishlist Product Added', {
+                wishlist_id: 'wishlist-001',
+                wishlist_name: 'My Wishlist',
+                ...product
+            });
+        }
+
+        function triggerWishlistRemoved(productId = 'prod-001') {
+            const product = sampleProducts[productId];
+            trackEvent('Wishlist Product Removed', {
+                wishlist_id: 'wishlist-001',
+                wishlist_name: 'My Wishlist',
+                ...product
+            });
+        }
+
+        function updateCartDisplay() {
+            const cartItemsContainer = document.getElementById('cart-items');
+
+            if (cartItems.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="flex justify-between items-center py-2 border-b border-gray-300 last:border-b-0">
+                        <span>Your cart is empty</span>
+                        <button class="bg-blue-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm hover:bg-blue-600" onclick="triggerCartViewed()">View Cart</button>
+                    </div>
+                `;
+            } else {
+                const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+                cartItemsContainer.innerHTML = cartItems.map(item => `
+                    <div class="flex justify-between items-center py-2 border-b border-gray-300 last:border-b-0">
+                        <span>${item.name} - $${item.price}</span>
+                        <button class="bg-red-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm hover:bg-red-600" onclick="triggerProductRemoved('${item.product_id}')">Remove</button>
+                    </div>
+                `).join('') + `
+                    <div class="flex justify-between items-center py-2 border-b border-gray-300 last:border-b-0">
+                        <strong>Total: $${total.toFixed(2)}</strong>
+                        <button class="bg-green-500 text-white border-none py-2 px-4 rounded cursor-pointer text-sm hover:bg-green-600" onclick="triggerCheckoutStarted()">Checkout</button>
+                    </div>
+                `;
+            }
+        }
+    </script>
+
+    <!-- Load the actual Store Events Tracker -->
+    <script type="module" src="/src/index.ts"></script>
+</body>
+</html>

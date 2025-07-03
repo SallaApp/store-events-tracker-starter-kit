@@ -8,7 +8,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'StoreEventsTracker',
-      fileName: 'store-events-tracker',
+      fileName: 'tracker',
       formats: ['umd', 'es']
     },
     rollupOptions: {

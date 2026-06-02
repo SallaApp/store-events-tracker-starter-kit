@@ -20,11 +20,11 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.3",
     "vite": "^5.0.0"
   },
   "dependencies": {
-    "@salla.sa/ecommerce-events-base": "~1.0"
+    "@salla.sa/ecommerce-events-base": "~1.1"
   }
 }

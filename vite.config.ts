@@ -11,7 +11,7 @@ export default defineConfig({
       fileName: 'tracker',
       formats: ['umd', 'es']
     },
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         globals: {
           // Add any global dependencies here if needed

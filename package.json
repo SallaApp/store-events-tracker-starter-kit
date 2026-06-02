@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "vite build && tsc --noEmit"
   },
   "keywords": [
     "ecommerce",
@@ -19,6 +19,9 @@
   ],
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.19.0 || >=22.12.0"
+  },
   "devDependencies": {
     "@types/node": "^25.0.0",
     "typescript": "^6.0.0",
